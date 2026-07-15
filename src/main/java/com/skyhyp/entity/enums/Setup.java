@@ -2,7 +2,7 @@ package com.skyhyp.entity.enums;
 
 public enum Setup {
     BREAKOUT,
-    RESET,
+    RETEST,
     WEEK_52_HIGH,
     TOP_PERFORMER
 }

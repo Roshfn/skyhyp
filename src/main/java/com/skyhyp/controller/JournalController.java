@@ -2,24 +2,20 @@ package com.skyhyp.controller;
 
 import com.skyhyp.dto.JournalRequest;
 import com.skyhyp.dto.JournalResponse;
+import com.skyhyp.security.UserPrincipal;
 import com.skyhyp.service.JournalService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
-/**
- * NOTE: userId is taken from the path for now, since JWT auth isn't wired in yet.
- * Once Spring Security + JWT is added, replace the {userId} path variable with
- * a value pulled from the authenticated principal (e.g. @AuthenticationPrincipal),
- * so a user can never pass someone else's userId here.
- */
 @RestController
-@RequestMapping("/api/v1/users/{userId}/journals")
+@RequestMapping("/api/v1/journals")
 @RequiredArgsConstructor
 public class JournalController {
 
@@ -27,41 +23,43 @@ public class JournalController {
 
     @PostMapping
     public ResponseEntity<JournalResponse> createJournal(
-            @PathVariable UUID userId,
+            @AuthenticationPrincipal UserPrincipal principal,
             @Valid @RequestBody JournalRequest request) {
 
-        JournalResponse response = journalService.createJournal(userId, request);
+        JournalResponse response = journalService.createJournal(principal.userId(), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{journalId}")
     public ResponseEntity<JournalResponse> getJournal(
-            @PathVariable UUID userId,
+            @AuthenticationPrincipal UserPrincipal principal,
             @PathVariable UUID journalId) {
 
-        return ResponseEntity.ok(journalService.getJournal(userId, journalId));
+        return ResponseEntity.ok(journalService.getJournal(principal.userId(), journalId));
     }
 
     @GetMapping
-    public ResponseEntity<List<JournalResponse>> getAllJournals(@PathVariable UUID userId) {
-        return ResponseEntity.ok(journalService.getAllJournals(userId));
+    public ResponseEntity<List<JournalResponse>> getAllJournals(
+            @AuthenticationPrincipal UserPrincipal principal) {
+
+        return ResponseEntity.ok(journalService.getAllJournals(principal.userId()));
     }
 
     @PutMapping("/{journalId}")
     public ResponseEntity<JournalResponse> updateJournal(
-            @PathVariable UUID userId,
+            @AuthenticationPrincipal UserPrincipal principal,
             @PathVariable UUID journalId,
             @Valid @RequestBody JournalRequest request) {
 
-        return ResponseEntity.ok(journalService.updateJournal(userId, journalId, request));
+        return ResponseEntity.ok(journalService.updateJournal(principal.userId(), journalId, request));
     }
 
     @DeleteMapping("/{journalId}")
     public ResponseEntity<Void> deleteJournal(
-            @PathVariable UUID userId,
+            @AuthenticationPrincipal UserPrincipal principal,
             @PathVariable UUID journalId) {
 
-        journalService.deleteJournal(userId, journalId);
+        journalService.deleteJournal(principal.userId(), journalId);
         return ResponseEntity.noContent().build();
     }
 }
