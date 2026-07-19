@@ -1,8 +1,10 @@
 package com.skyhyp.service;
 
+import com.skyhyp.dto.DailyPnlResponse;
 import com.skyhyp.dto.JournalRequest;
 import com.skyhyp.dto.JournalResponse;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,4 +19,6 @@ public interface JournalService {
     JournalResponse updateJournal(UUID userId, UUID journalId, JournalRequest request);
 
     void deleteJournal(UUID userId, UUID journalId);
+
+    List<DailyPnlResponse> getDailyPnl(UUID userId, LocalDate start, LocalDate end);
 }

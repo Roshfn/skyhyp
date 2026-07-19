@@ -1,5 +1,6 @@
 package com.skyhyp.service;
 
+import com.skyhyp.dto.DailyPnlResponse;
 import com.skyhyp.dto.JournalMapper;
 import com.skyhyp.dto.JournalRequest;
 import com.skyhyp.dto.JournalResponse;
@@ -9,24 +10,24 @@ import com.skyhyp.exception.AccessDeniedException;
 import com.skyhyp.exception.ResourceNotFoundException;
 import com.skyhyp.repository.JournalRepository;
 import com.skyhyp.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class JournalServiceImpl implements JournalService {
 
+    private static final long MAX_RANGE_DAYS = 366;
+
     private final JournalRepository journalRepository;
     private final UserRepository userRepository;
-
-    public JournalServiceImpl(JournalRepository journalRepository,
-                          UserRepository userRepository) {
-        this.journalRepository = journalRepository;
-        this.userRepository = userRepository;
-    }
 
     @Override
     public JournalResponse createJournal(UUID userId, JournalRequest request) {
@@ -46,7 +47,6 @@ public class JournalServiceImpl implements JournalService {
     @Override
     @Transactional(readOnly = true)
     public List<JournalResponse> getAllJournals(UUID userId) {
-        // Ensures a 404 (not an empty list) if the userId itself doesn't exist.
         getUserOrThrow(userId);
 
         return journalRepository.findByUser_UserIdOrderByDateDesc(userId)
@@ -59,8 +59,6 @@ public class JournalServiceImpl implements JournalService {
     public JournalResponse updateJournal(UUID userId, UUID journalId, JournalRequest request) {
         Journal journal = getJournalOwnedByUserOrThrow(userId, journalId);
         JournalMapper.updateEntity(journal, request);
-        // No explicit save() needed - entity is managed within this @Transactional method,
-        // so JPA dirty-checking flushes the changes automatically at commit.
         return JournalMapper.toResponse(journal);
     }
 
@@ -68,6 +66,21 @@ public class JournalServiceImpl implements JournalService {
     public void deleteJournal(UUID userId, UUID journalId) {
         Journal journal = getJournalOwnedByUserOrThrow(userId, journalId);
         journalRepository.delete(journal);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DailyPnlResponse> getDailyPnl(UUID userId, LocalDate start, LocalDate end) {
+        getUserOrThrow(userId);
+
+        if (end.isBefore(start)) {
+            throw new IllegalArgumentException("end date must not be before start date");
+        }
+        if (ChronoUnit.DAYS.between(start, end) > MAX_RANGE_DAYS) {
+            throw new IllegalArgumentException("date range must not exceed " + MAX_RANGE_DAYS + " days");
+        }
+
+        return journalRepository.aggregateDailyPnl(userId, start, end);
     }
 
     private User getUserOrThrow(UUID userId) {

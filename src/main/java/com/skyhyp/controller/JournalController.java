@@ -1,5 +1,6 @@
 package com.skyhyp.controller;
 
+import com.skyhyp.dto.DailyPnlResponse;
 import com.skyhyp.dto.JournalRequest;
 import com.skyhyp.dto.JournalResponse;
 import com.skyhyp.security.UserPrincipal;
@@ -11,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.Year;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,5 +64,16 @@ public class JournalController {
 
         journalService.deleteJournal(principal.userId(), journalId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/heatmap")
+    public ResponseEntity<List<DailyPnlResponse>> getDailyPnl(
+            @AuthenticationPrincipal UserPrincipal principal) {
+
+        int currentYear = Year.now().getValue();
+        LocalDate start = LocalDate.of(currentYear, 1, 1);
+        LocalDate end = LocalDate.of(currentYear, 12, 31);
+
+        return ResponseEntity.ok(journalService.getDailyPnl(principal.userId(), start, end));
     }
 }
