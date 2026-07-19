@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import TopBar from '../components/TopBar'
 import JournalCard from '../components/JournalCard'
+import PnlHeatmap from '../components/PnlHeatmap'
 import { api, ApiError } from '../api/client'
 
 export default function DashboardPage() {
   const [journals, setJournals] = useState(null)
   const [error, setError] = useState(null)
+  const [heatmapData, setHeatmapData] = useState(null)
 
   useEffect(() => {
     let cancelled = false
@@ -17,6 +19,22 @@ export default function DashboardPage() {
       })
       .catch((err) => {
         if (!cancelled) setError(err instanceof ApiError ? err.message : 'Could not load your journal entries.')
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    let cancelled = false
+    api
+      .getHeatmap()
+      .then((data) => {
+        if (!cancelled) setHeatmapData(data)
+      })
+      .catch(() => {
+        // Non-critical for the page - fail quietly and just show an empty grid.
+        if (!cancelled) setHeatmapData([])
       })
     return () => {
       cancelled = true
@@ -62,6 +80,8 @@ export default function DashboardPage() {
         </div>
 
         {error && <div className="alert alert-error">{error}</div>}
+
+        <PnlHeatmap data={heatmapData} />
 
         {journals && journals.length === 0 && !error && (
           <div
