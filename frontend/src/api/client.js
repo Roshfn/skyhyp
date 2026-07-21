@@ -152,6 +152,7 @@ export const api = {
   // --- journals (all require the access token) ---
   getJournals: () => request('/journals'),
   getHeatmap: () => request('/journals/heatmap'),
+  getDashboard: () => request('/dashboard'),
   getJournal: (id) => request(`/journals/${id}`),
   createJournal: (payload) => request('/journals', { method: 'POST', body: payload }),
   updateJournal: (id, payload) => request(`/journals/${id}`, { method: 'PUT', body: payload }),

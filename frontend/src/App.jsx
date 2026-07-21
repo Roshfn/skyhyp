@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import DashboardPage from './pages/DashboardPage'
+import PerformancePage from './pages/PerformancePage'
 import JournalFormPage from './pages/JournalFormPage'
 import JournalDetailPage from './pages/JournalDetailPage'
 
@@ -28,6 +29,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <JournalFormPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/performance"
+            element={
+              <ProtectedRoute>
+                <PerformancePage />
               </ProtectedRoute>
             }
           />

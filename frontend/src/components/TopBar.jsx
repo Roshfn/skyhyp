@@ -32,6 +32,9 @@ export default function TopBar() {
         </Link>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <Link to="/performance" style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--color-ink-soft)' }}>
+            Performance
+          </Link>
           {user?.gmail && (
             <span style={{ fontSize: 13, color: 'var(--color-ink-soft)' }}>{user.gmail}</span>
           )}
