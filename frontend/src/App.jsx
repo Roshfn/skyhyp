@@ -3,8 +3,10 @@ import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
-import DashboardPage from './pages/DashboardPage'
+import HomePage from './pages/HomePage'
+import TradesPage from './pages/TradesPage'
 import PerformancePage from './pages/PerformancePage'
+import ReviewPage from './pages/ReviewPage'
 import JournalFormPage from './pages/JournalFormPage'
 import JournalDetailPage from './pages/JournalDetailPage'
 
@@ -20,15 +22,15 @@ export default function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <DashboardPage />
+                <HomePage />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/journals/new"
+            path="/trades"
             element={
               <ProtectedRoute>
-                <JournalFormPage />
+                <TradesPage />
               </ProtectedRoute>
             }
           />
@@ -37,6 +39,22 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <PerformancePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/review"
+            element={
+              <ProtectedRoute>
+                <ReviewPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/journals/new"
+            element={
+              <ProtectedRoute>
+                <JournalFormPage />
               </ProtectedRoute>
             }
           />

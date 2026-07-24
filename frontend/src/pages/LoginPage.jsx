@@ -39,7 +39,7 @@ export default function LoginPage() {
       <div style={{ marginBottom: 8 }}>
         <Logo size={26} />
       </div>
-      <h1>Welcome to skyhyp</h1>
+      <h1 className="heading-italic">Welcome to skyhyp</h1>
       <p style={{ marginBottom: 28 }}>Log in to your trading journal.</p>
 
       {justRegistered && !error && (

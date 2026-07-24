@@ -153,6 +153,14 @@ export const api = {
   getJournals: () => request('/journals'),
   getHeatmap: () => request('/journals/heatmap'),
   getDashboard: () => request('/dashboard'),
+
+  // --- daily reviews ---
+  getReview: (dateStr) => request(`/reviews/${dateStr}`),
+  upsertReview: (dateStr, content) =>
+    request(`/reviews/${dateStr}`, { method: 'PUT', body: { content } }),
+  getReviewsInRange: (startStr, endStr) =>
+    request(`/reviews?start=${startStr}&end=${endStr}`),
+  deleteReview: (dateStr) => request(`/reviews/${dateStr}`, { method: 'DELETE' }),
   getJournal: (id) => request(`/journals/${id}`),
   createJournal: (payload) => request('/journals', { method: 'POST', body: payload }),
   updateJournal: (id, payload) => request(`/journals/${id}`, { method: 'PUT', body: payload }),

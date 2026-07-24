@@ -2,7 +2,7 @@ export default function Logo({ size = 22 }) {
   return (
     <span
       style={{
-        fontFamily: 'var(--font-heading)',
+        fontFamily: '"Source Serif 4", Georgia, serif',
         fontStyle: 'italic',
         fontWeight: 600,
         fontSize: size,

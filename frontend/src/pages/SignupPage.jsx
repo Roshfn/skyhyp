@@ -84,7 +84,7 @@ export default function SignupPage() {
       <div style={{ marginBottom: 8 }}>
         <Logo size={26} />
       </div>
-      <h1>Create your account</h1>
+      <h1 className="heading-italic">Create your account</h1>
       <p style={{ marginBottom: 8 }}>
         Step {step} of 3 —{' '}
         {step === STEPS.EMAIL ? 'verify your email' : step === STEPS.OTP ? 'enter the code' : 'set up your login'}
