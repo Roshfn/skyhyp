@@ -1,6 +1,5 @@
 package com.skyhyp.entity;
 
-
 import com.skyhyp.entity.enums.DidFollowPlan;
 import com.skyhyp.entity.enums.Emotion;
 import com.skyhyp.entity.enums.RiskReward;
@@ -61,6 +60,9 @@ public class Journal {
     @Enumerated(EnumType.STRING)
     @Column(name = "risk_reward", nullable = false, length = 20)
     private RiskReward riskReward;
+
+    @Column(name = "custom_risk_reward", length = 20)
+    private String customRiskReward;
 
     @Column(name = "profit_loss", precision = 19, scale = 4)
     private BigDecimal profitLoss;

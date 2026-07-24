@@ -7,7 +7,8 @@ import {
   RISK_REWARD_OPTIONS,
   DID_FOLLOW_PLAN_OPTIONS,
   EMOTION_OPTIONS,
-  labelize
+  labelize,
+  riskRewardLabel
 } from '../constants/enums'
 
 const EMPTY_FORM = {
@@ -19,6 +20,7 @@ const EMPTY_FORM = {
   target: '',
   takeProfit: '',
   riskReward: RISK_REWARD_OPTIONS[0],
+  customRiskReward: '',
   profitLoss: '',
   whyIEntered: '',
   didIFollowMyPlan: DID_FOLLOW_PLAN_OPTIONS[0],
@@ -184,10 +186,22 @@ export default function JournalFormPage() {
                 >
                   {RISK_REWARD_OPTIONS.map((opt) => (
                     <option key={opt} value={opt}>
-                      {labelize(opt)}
+                      {riskRewardLabel(opt)}
                     </option>
                   ))}
                 </select>
+                {form.riskReward === 'CUSTOM' && (
+                  <input
+                    type="text"
+                    placeholder="e.g. 1:5 or 2.5:1"
+                    maxLength={20}
+                    value={form.customRiskReward}
+                    onChange={(e) => updateField('customRiskReward', e.target.value)}
+                    style={{ marginTop: 8 }}
+                    required
+                  />
+                )}
+                {fieldErrors.customRiskReward && <div className="field-error">{fieldErrors.customRiskReward}</div>}
               </div>
             </div>
 

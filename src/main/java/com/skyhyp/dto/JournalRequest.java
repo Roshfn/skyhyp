@@ -5,6 +5,7 @@ import com.skyhyp.entity.enums.Setup;
 import com.skyhyp.entity.enums.DidFollowPlan;
 import com.skyhyp.entity.enums.Emotion;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -37,6 +38,15 @@ public record JournalRequest(
 
         @NotNull(message = "riskReward is required")
         RiskReward riskReward,
+
+        /**
+         * Only meaningful when riskReward == CUSTOM, e.g. "1:5" or "2.5:1".
+         * The enum can't hold arbitrary ratios (":" isn't a valid enum
+         * constant character), so the actual value lives here instead.
+         * Left null for the fixed RR_1_1/RR_1_2/RR_1_3 options.
+         */
+        @Size(max = 20, message = "customRiskReward must be 20 characters or fewer")
+        String customRiskReward,
 
         BigDecimal profitLoss,
 

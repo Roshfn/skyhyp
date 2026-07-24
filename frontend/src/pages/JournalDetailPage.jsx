@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import TopBar from '../components/TopBar'
 import PnlText from '../components/PnlText'
 import { api, ApiError } from '../api/client'
-import { labelize } from '../constants/enums'
+import { labelize, riskRewardLabel } from '../constants/enums'
 
 function Field({ label, children }) {
   return (
@@ -101,7 +101,7 @@ export default function JournalDetailPage() {
                 <Field label="Setup">
                   <span className="badge badge-sky">{labelize(journal.setup)}</span>
                 </Field>
-                <Field label="Risk : Reward">{labelize(journal.riskReward)}</Field>
+                <Field label="Risk : Reward">{riskRewardLabel(journal.riskReward, journal.customRiskReward)}</Field>
               </div>
 
               <div className="field-row">

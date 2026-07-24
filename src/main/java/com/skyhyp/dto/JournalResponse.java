@@ -22,6 +22,7 @@ public record JournalResponse(
         BigDecimal target,
         BigDecimal takeProfit,
         RiskReward riskReward,
+        String customRiskReward,
         BigDecimal profitLoss,
         String whyIEntered,
         DidFollowPlan didIFollowMyPlan,

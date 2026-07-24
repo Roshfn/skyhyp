@@ -2,6 +2,7 @@ package com.skyhyp.dto;
 
 import com.skyhyp.entity.Journal;
 import com.skyhyp.entity.User;
+import com.skyhyp.entity.enums.RiskReward;
 
 public final class JournalMapper {
 
@@ -20,6 +21,7 @@ public final class JournalMapper {
                 journal.getTarget(),
                 journal.getTakeProfit(),
                 journal.getRiskReward(),
+                journal.getCustomRiskReward(),
                 journal.getProfitLoss(),
                 journal.getWhyIEntered(),
                 journal.getDidIFollowMyPlan(),
@@ -33,6 +35,8 @@ public final class JournalMapper {
     }
 
     public static Journal toEntity(JournalRequest request, User user) {
+        validateCustomRiskReward(request);
+
         return Journal.builder()
                 .user(user)
                 .setup(request.setup())
@@ -43,6 +47,7 @@ public final class JournalMapper {
                 .target(request.target())
                 .takeProfit(request.takeProfit())
                 .riskReward(request.riskReward())
+                .customRiskReward(request.riskReward() == RiskReward.CUSTOM ? request.customRiskReward() : null)
                 .profitLoss(request.profitLoss())
                 .whyIEntered(request.whyIEntered())
                 .didIFollowMyPlan(request.didIFollowMyPlan())
@@ -58,6 +63,8 @@ public final class JournalMapper {
      * picks up the changes without needing an explicit save() call.
      */
     public static void updateEntity(Journal journal, JournalRequest request) {
+        validateCustomRiskReward(request);
+
         journal.setSetup(request.setup());
         journal.setDate(request.date());
         journal.setDerivative(request.derivative());
@@ -66,6 +73,7 @@ public final class JournalMapper {
         journal.setTarget(request.target());
         journal.setTakeProfit(request.takeProfit());
         journal.setRiskReward(request.riskReward());
+        journal.setCustomRiskReward(request.riskReward() == RiskReward.CUSTOM ? request.customRiskReward() : null);
         journal.setProfitLoss(request.profitLoss());
         journal.setWhyIEntered(request.whyIEntered());
         journal.setDidIFollowMyPlan(request.didIFollowMyPlan());
@@ -73,5 +81,17 @@ public final class JournalMapper {
         journal.setEmotionDuringTrade(request.emotionDuringTrade());
         journal.setMistakesMade(request.mistakesMade());
         journal.setLessonsLearned(request.lessonsLearned());
+    }
+
+    /**
+     * customRiskReward only makes sense when riskReward == CUSTOM. Enforced here,
+     * once, so both create and update paths can't drift apart on this rule -
+     * and so a stray customRiskReward value never lingers on a non-CUSTOM trade.
+     */
+    private static void validateCustomRiskReward(JournalRequest request) {
+        if (request.riskReward() == RiskReward.CUSTOM
+                && (request.customRiskReward() == null || request.customRiskReward().isBlank())) {
+            throw new IllegalArgumentException("customRiskReward is required when riskReward is CUSTOM");
+        }
     }
 }
