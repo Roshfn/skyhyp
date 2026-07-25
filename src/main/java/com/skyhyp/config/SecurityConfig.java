@@ -34,12 +34,20 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
 
     private static final String[] PUBLIC_ENDPOINTS = {
+            "/",
+            "/index.html",
+            "/assets/**",
+            "/favicon.ico",
+
             "/api/v1/auth/**",
+
             "/swagger-ui/**",
-            "/error",
             "/swagger-ui.html",
+
             "/v3/api-docs/**",
-            "/v3/api-docs"
+            "/v3/api-docs",
+
+            "/error"
 
     };
 
@@ -71,7 +79,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
